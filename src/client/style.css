@@ -292,7 +292,56 @@ body {
 /* ===== Spin Controls ===== */
 #spin-controls {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
+
+#bet-btn {
+  background: linear-gradient(135deg, #1a3a6b, #2563ab);
+  color: #fff;
+  font-size: 1rem;
+  font-family: 'Georgia', serif;
+  font-weight: bold;
+  border: 3px solid #63a7ff;
+  border-radius: 10px;
+  padding: 12px 0;
+  width: 100%;
+  min-height: 48px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: transform 0.1s, box-shadow 0.15s;
+  box-shadow: 0 4px 12px #00000066;
+  touch-action: manipulation;
+}
+
+#bet-btn:active { transform: scale(0.97); }
+
+.bet-input-wrapper {
+  display: flex;
+  justify-content: center;
+  margin: 12px 0;
+}
+
+.bet-input {
+  background: rgba(0,0,0,0.5);
+  border: 2px solid #c9a227;
+  border-radius: 8px;
+  color: #f5e6c0;
+  font-family: 'Georgia', serif;
+  font-size: 2rem;
+  padding: 10px 20px;
+  width: 130px;
+  text-align: center;
+  outline: none;
+  -moz-appearance: textfield;
+}
+
+.bet-input::-webkit-outer-spin-button,
+.bet-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+.bet-input:focus { border-color: #ffd700; }
 
 #spin-btn {
   background: linear-gradient(135deg, #8b0000, #c0392b);
@@ -530,6 +579,11 @@ body {
   #start-btn:hover {
     transform: scale(1.05);
     box-shadow: 0 6px 20px #ffd70044;
+  }
+
+  #bet-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px #63a7ff44;
   }
 
   .modal-btn:hover:not(:disabled) {

@@ -76,6 +76,55 @@ export function askRetrigger(effects: Effect[], retriggersLeft: number): Promise
   });
 }
 
+export function askBetAmount(playerName: string): Promise<number> {
+  return new Promise(resolve => {
+    showModal(`
+      <h2 class="modal-title">🎲 Apostar Fichas</h2>
+      <p class="modal-desc"><strong>${playerName}</strong>, quantas fichas quer apostar?</p>
+      <p class="modal-desc">Cada ficha equivale a 1 giro na roleta.</p>
+      <div class="bet-input-wrapper">
+        <input type="number" id="bet-input" class="bet-input" min="1" max="20" value="1" />
+      </div>
+      <div class="modal-buttons">
+        <button class="modal-btn confirm-bet-btn">✅ Confirmar Aposta</button>
+      </div>
+    `);
+
+    const input = modalBox.querySelector<HTMLInputElement>('#bet-input')!;
+    modalBox.querySelector('.confirm-bet-btn')!.addEventListener('click', () => {
+      const val = Math.max(1, Math.min(20, parseInt(input.value) || 1));
+      hideModal();
+      resolve(val);
+    });
+  });
+}
+
+export function askBetSpin(effects: Effect[], spinsLeft: number): Promise<'accept' | 'respin'> {
+  return new Promise(resolve => {
+    const effectDesc = effects.length === 0
+      ? 'Nenhuma conexão'
+      : effects.map(describeEffect).join(', ');
+
+    const respinDisabled = spinsLeft <= 0 ? 'disabled' : '';
+    const plural = spinsLeft !== 1 ? 's' : '';
+
+    showModal(`
+      <h2 class="modal-title">🎲 Aposta de Fichas</h2>
+      <p class="modal-desc">Resultado atual: <strong>${effectDesc}</strong></p>
+      <p class="modal-desc">Fichas restantes: <strong>${spinsLeft}</strong></p>
+      <div class="modal-buttons">
+        <button class="modal-btn accept-btn">✅ Aceitar resultado</button>
+        <button class="modal-btn respin-btn" ${respinDisabled}>🎰 Usar ficha (${spinsLeft} restante${plural})</button>
+      </div>
+    `);
+
+    modalBox.querySelector('.accept-btn')!.addEventListener('click', () => { hideModal(); resolve('accept'); });
+    if (!respinDisabled) {
+      modalBox.querySelector('.respin-btn')!.addEventListener('click', () => { hideModal(); resolve('respin'); });
+    }
+  });
+}
+
 export function showCarta(count: number): Promise<void> {
   return new Promise(resolve => {
     const cards = Array.from({ length: count }, () => `<div class="card-back">?</div>`).join('');

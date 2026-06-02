@@ -51,10 +51,16 @@ function startTurn(): void {
   renderer.updatePlayerPanels(state);
   renderer.setPhaseMessage(`🎰 Vez de <strong>${getActivePlayer(state).name}</strong>`);
 
-  renderer.showSpinButton(async () => {
-    renderer.hideSpinButton();
-    await runSpin();
-  });
+  renderer.showSpinButton(
+    async () => {
+      renderer.hideSpinButton();
+      await runSpin();
+    },
+    async () => {
+      renderer.hideSpinButton();
+      await runBetSpins();
+    }
+  );
 }
 
 async function runSpin(): Promise<void> {
@@ -92,6 +98,34 @@ async function handleRetrigger(initialEffects: Effect[]): Promise<Effect[]> {
   }
 
   return currentEffects;
+}
+
+async function runBetSpins(): Promise<void> {
+  const activePlayer = getActivePlayer(state);
+  const betAmount = await Modals.askBetAmount(activePlayer.name);
+
+  let spinsLeft = betAmount;
+
+  renderer.setPhaseMessage(`🎲 Aposta: ${spinsLeft} giro(s) — girando...`);
+  const firstGrid = spin();
+  const { winLines: firstLines, effects: firstEffects } = await renderer.animateSpin(firstGrid);
+  await delay(firstLines.length > 0 ? 800 : 400);
+  spinsLeft--;
+  let currentEffects = firstEffects.filter(e => e.type !== 'retrigger');
+
+  while (spinsLeft > 0) {
+    const choice = await Modals.askBetSpin(currentEffects, spinsLeft);
+    if (choice === 'accept') break;
+
+    renderer.setPhaseMessage(`🎲 Aposta: ${spinsLeft} giro(s) restante(s) — girando...`);
+    const newGrid = spin();
+    const { winLines, effects } = await renderer.animateSpin(newGrid);
+    await delay(winLines.length > 0 ? 800 : 400);
+    spinsLeft--;
+    currentEffects = effects.filter(e => e.type !== 'retrigger');
+  }
+
+  await resolveEffects(currentEffects);
 }
 
 async function resolveEffects(effects: Effect[]): Promise<void> {

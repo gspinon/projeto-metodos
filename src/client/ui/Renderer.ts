@@ -56,12 +56,20 @@ export class Renderer {
     this.phaseMsg.innerHTML = msg;
   }
 
-  showSpinButton(onSpin: () => void): void {
+  showSpinButton(onSpin: () => void, onBet: () => void): void {
     this.spinBtn.onclick = () => {
       this.spinBtn.setAttribute('disabled', 'true');
       onSpin();
     };
     this.spinBtn.removeAttribute('disabled');
+
+    const betBtn = document.getElementById('bet-btn') as HTMLButtonElement;
+    betBtn.onclick = () => {
+      betBtn.setAttribute('disabled', 'true');
+      onBet();
+    };
+    betBtn.removeAttribute('disabled');
+
     document.getElementById('spin-controls')!.classList.remove('hidden');
   }
 

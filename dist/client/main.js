@@ -153,12 +153,18 @@
     setPhaseMessage(msg) {
       this.phaseMsg.innerHTML = msg;
     }
-    showSpinButton(onSpin) {
+    showSpinButton(onSpin, onBet) {
       this.spinBtn.onclick = () => {
         this.spinBtn.setAttribute("disabled", "true");
         onSpin();
       };
       this.spinBtn.removeAttribute("disabled");
+      const betBtn = document.getElementById("bet-btn");
+      betBtn.onclick = () => {
+        betBtn.setAttribute("disabled", "true");
+        onBet();
+      };
+      betBtn.removeAttribute("disabled");
       document.getElementById("spin-controls").classList.remove("hidden");
     }
     hideSpinButton() {
@@ -330,6 +336,53 @@
       }
     });
   }
+  function askBetAmount(playerName) {
+    return new Promise((resolve) => {
+      showModal(`
+      <h2 class="modal-title">\u{1F3B2} Apostar Fichas</h2>
+      <p class="modal-desc"><strong>${playerName}</strong>, quantas fichas quer apostar?</p>
+      <p class="modal-desc">Cada ficha equivale a 1 giro na roleta.</p>
+      <div class="bet-input-wrapper">
+        <input type="number" id="bet-input" class="bet-input" min="1" max="20" value="1" />
+      </div>
+      <div class="modal-buttons">
+        <button class="modal-btn confirm-bet-btn">\u2705 Confirmar Aposta</button>
+      </div>
+    `);
+      const input = modalBox.querySelector("#bet-input");
+      modalBox.querySelector(".confirm-bet-btn").addEventListener("click", () => {
+        const val = Math.max(1, Math.min(20, parseInt(input.value) || 1));
+        hideModal();
+        resolve(val);
+      });
+    });
+  }
+  function askBetSpin(effects, spinsLeft) {
+    return new Promise((resolve) => {
+      const effectDesc = effects.length === 0 ? "Nenhuma conex\xE3o" : effects.map(describeEffect).join(", ");
+      const respinDisabled = spinsLeft <= 0 ? "disabled" : "";
+      const plural = spinsLeft !== 1 ? "s" : "";
+      showModal(`
+      <h2 class="modal-title">\u{1F3B2} Aposta de Fichas</h2>
+      <p class="modal-desc">Resultado atual: <strong>${effectDesc}</strong></p>
+      <p class="modal-desc">Fichas restantes: <strong>${spinsLeft}</strong></p>
+      <div class="modal-buttons">
+        <button class="modal-btn accept-btn">\u2705 Aceitar resultado</button>
+        <button class="modal-btn respin-btn" ${respinDisabled}>\u{1F3B0} Usar ficha (${spinsLeft} restante${plural})</button>
+      </div>
+    `);
+      modalBox.querySelector(".accept-btn").addEventListener("click", () => {
+        hideModal();
+        resolve("accept");
+      });
+      if (!respinDisabled) {
+        modalBox.querySelector(".respin-btn").addEventListener("click", () => {
+          hideModal();
+          resolve("respin");
+        });
+      }
+    });
+  }
   function showCarta(count) {
     return new Promise((resolve) => {
       const cards = Array.from({ length: count }, () => `<div class="card-back">?</div>`).join("");
@@ -403,10 +456,16 @@
     renderer.clearEffectsLog();
     renderer.updatePlayerPanels(state);
     renderer.setPhaseMessage(`\u{1F3B0} Vez de <strong>${getActivePlayer(state).name}</strong>`);
-    renderer.showSpinButton(async () => {
-      renderer.hideSpinButton();
-      await runSpin();
-    });
+    renderer.showSpinButton(
+      async () => {
+        renderer.hideSpinButton();
+        await runSpin();
+      },
+      async () => {
+        renderer.hideSpinButton();
+        await runBetSpins();
+      }
+    );
   }
   async function runSpin() {
     renderer.setPhaseMessage(`\u{1F3B0} Girando...`);
@@ -433,6 +492,29 @@
       currentEffects = effects.filter((e) => e.type !== "retrigger");
     }
     return currentEffects;
+  }
+  async function runBetSpins() {
+    const activePlayer = getActivePlayer(state);
+    const betAmount = await askBetAmount(activePlayer.name);
+    let spinsLeft = betAmount;
+    renderer.setPhaseMessage(`\u{1F3B2} Aposta: ${spinsLeft} giro(s) \u2014 girando...`);
+    const firstGrid = spin();
+    const { winLines: firstLines, effects: firstEffects } = await renderer.animateSpin(firstGrid);
+    await delay2(firstLines.length > 0 ? 800 : 400);
+    spinsLeft--;
+    let currentEffects = firstEffects.filter((e) => e.type !== "retrigger");
+    while (spinsLeft > 0) {
+      const choice = await askBetSpin(currentEffects, spinsLeft);
+      if (choice === "accept")
+        break;
+      renderer.setPhaseMessage(`\u{1F3B2} Aposta: ${spinsLeft} giro(s) restante(s) \u2014 girando...`);
+      const newGrid = spin();
+      const { winLines, effects } = await renderer.animateSpin(newGrid);
+      await delay2(winLines.length > 0 ? 800 : 400);
+      spinsLeft--;
+      currentEffects = effects.filter((e) => e.type !== "retrigger");
+    }
+    await resolveEffects(currentEffects);
   }
   async function resolveEffects(effects) {
     const activePlayer = getActivePlayer(state);
