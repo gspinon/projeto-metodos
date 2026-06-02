@@ -2,11 +2,11 @@
 (() => {
   // src/client/game/SlotMachine.ts
   var SYMBOL_WEIGHTS = [
-    { symbol: "espada", weight: 27 },
-    { symbol: "vida", weight: 33 },
-    { symbol: "carta", weight: 20 },
-    { symbol: "retrigger", weight: 13 },
-    { symbol: "jackpot", weight: 7 }
+    { symbol: "espada", weight: 20 },
+    { symbol: "vida", weight: 20 },
+    { symbol: "carta", weight: 10 },
+    { symbol: "retrigger", weight: 10 },
+    { symbol: "jackpot", weight: 5 }
   ];
   var TOTAL_WEIGHT = SYMBOL_WEIGHTS.reduce((s, e) => s + e.weight, 0);
   var WIN_LINES = [
@@ -16,7 +16,7 @@
     [[0, 0], [1, 1], [2, 2]],
     [[0, 2], [1, 1], [2, 0]]
   ];
-  var GUARANTEED_WIN_CHANCE = 0.7;
+  var GUARANTEED_WIN_CHANCE = 0.5;
   function randomSymbol() {
     let roll = Math.random() * TOTAL_WEIGHT;
     for (const { symbol, weight } of SYMBOL_WEIGHTS) {
