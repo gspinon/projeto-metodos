@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Caça-Níqueis</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Setup screen -->
+  <div id="setup-screen">
+    <h1 id="setup-title">🎰 Caça-Níqueis</h1>
+    <p id="setup-subtitle">Quantos jogadores?</p>
+    <div id="player-count-picker">
+      <button type="button" class="count-btn" data-count="2">2</button>
+      <button type="button" class="count-btn" data-count="3">3</button>
+      <button type="button" class="count-btn" data-count="4">4</button>
+    </div>
+    <form id="setup-form" class="hidden">
+      <p id="setup-names-label">Digite o nome dos jogadores</p>
+      <div class="setup-inputs">
+        <div class="setup-field">
+          <label>Jogador 1</label>
+          <input type="text" class="name-input" maxlength="16" placeholder="Nome do jogador 1" />
+        </div>
+        <div class="setup-field">
+          <label>Jogador 2</label>
+          <input type="text" class="name-input" maxlength="16" placeholder="Nome do jogador 2" />
+        </div>
+        <div class="setup-field player-field-3 hidden">
+          <label>Jogador 3</label>
+          <input type="text" class="name-input" maxlength="16" placeholder="Nome do jogador 3" />
+        </div>
+        <div class="setup-field player-field-4 hidden">
+          <label>Jogador 4</label>
+          <input type="text" class="name-input" maxlength="16" placeholder="Nome do jogador 4" />
+        </div>
+      </div>
+      <button type="submit" id="start-btn">🎲 Iniciar Jogo</button>
+    </form>
+  </div>
+
+  <div id="game" class="hidden">
+
+    <!-- Left players: P0, P2 -->
+    <div class="players-side" id="side-left">
+      <div class="player-panel" id="player-0">
+        <div class="player-name">Jogador 1</div>
+
+        <div class="player-badge">P1</div>
+      </div>
+      <div class="player-panel" id="player-2">
+        <div class="player-name">Jogador 3</div>
+
+        <div class="player-badge">P3</div>
+      </div>
+    </div>
+
+    <!-- Center: slot machine + controls -->
+    <div id="center">
+      <h1 id="title">🎰 Caça-Níqueis</h1>
+
+      <div id="phase-message">Carregando...</div>
+
+      <div id="slot-machine">
+        <div id="slot-frame">
+          <div id="grid">
+            <div class="reel-col">
+              <div class="reel-window" id="reel-window-0">
+                <div class="reel-strip" id="strip-0"></div>
+              </div>
+            </div>
+            <div class="reel-col">
+              <div class="reel-window" id="reel-window-1">
+                <div class="reel-strip" id="strip-1"></div>
+              </div>
+            </div>
+            <div class="reel-col">
+              <div class="reel-window" id="reel-window-2">
+                <div class="reel-strip" id="strip-2"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="spin-controls" class="hidden">
+        <button id="spin-btn">🎰 GIRAR</button>
+      </div>
+
+      <div id="effects-log" class="hidden"></div>
+
+      <div id="legend">
+        <span>⚔️ Espada=3 dano</span>
+        <span>❤️ Vida=3 cura</span>
+        <span>🃏 Carta</span>
+        <span>🔄 Retrigger=3 giros</span>
+        <span>💰 Jackpot=4 HP</span>
+      </div>
+    </div>
+
+    <!-- Right players: P1, P3 -->
+    <div class="players-side" id="side-right">
+      <div class="player-panel" id="player-1">
+        <div class="player-name">Jogador 2</div>
+
+        <div class="player-badge">P2</div>
+      </div>
+      <div class="player-panel" id="player-3">
+        <div class="player-name">Jogador 4</div>
+
+        <div class="player-badge">P4</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Modal overlay -->
+  <div id="modal-overlay" class="hidden">
+    <div id="modal-box"></div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "name": "slot-machine",
+  "version": "1.0.0",
+  "scripts": {
+    "prepare-dist": "node -e \"require('fs').mkdirSync('dist/client',{recursive:true}); require('fs').copyFileSync('src/client/index.html','dist/client/index.html'); require('fs').copyFileSync('src/client/style.css','dist/client/style.css');\"",
+    "dev": "npm run prepare-dist && concurrently \"tsx watch src/server/index.ts\" \"esbuild src/client/main.ts --bundle --outfile=dist/client/main.js --sourcemap --watch\"",
+    "build": "npm run prepare-dist && esbuild src/client/main.ts --bundle --minify --outfile=dist/client/main.js && tsc -p tsconfig.json",
+    "start": "node dist/server/index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.10.0",
+    "concurrently": "^8.2.2",
+    "esbuild": "^0.19.10",
+    "tsx": "^4.6.2",
+    "typescript": "^5.3.2"
+  }
+}
