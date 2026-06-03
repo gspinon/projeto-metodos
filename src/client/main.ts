@@ -59,6 +59,11 @@ function startTurn(): void {
     async () => {
       renderer.hideSpinButton();
       await runBetSpins();
+    },
+    () => {
+      renderer.hideSpinButton();
+      state = advanceTurn(state);
+      startTurn();
     }
   );
 }

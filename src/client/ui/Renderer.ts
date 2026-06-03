@@ -56,7 +56,7 @@ export class Renderer {
     this.phaseMsg.innerHTML = msg;
   }
 
-  showSpinButton(onSpin: () => void, onBet: () => void): void {
+  showSpinButton(onSpin: () => void, onBet: () => void, onSkip: () => void): void {
     this.spinBtn.onclick = () => {
       this.spinBtn.setAttribute('disabled', 'true');
       onSpin();
@@ -69,6 +69,13 @@ export class Renderer {
       onBet();
     };
     betBtn.removeAttribute('disabled');
+
+    const skipBtn = document.getElementById('skip-btn') as HTMLButtonElement;
+    skipBtn.onclick = () => {
+      skipBtn.setAttribute('disabled', 'true');
+      onSkip();
+    };
+    skipBtn.removeAttribute('disabled');
 
     document.getElementById('spin-controls')!.classList.remove('hidden');
   }

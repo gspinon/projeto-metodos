@@ -2,11 +2,11 @@
 (() => {
   // src/client/game/SlotMachine.ts
   var SYMBOL_WEIGHTS = [
-    { symbol: "espada", weight: 20 },
-    { symbol: "vida", weight: 20 },
-    { symbol: "carta", weight: 10 },
-    { symbol: "retrigger", weight: 10 },
-    { symbol: "jackpot", weight: 5 }
+    { symbol: "espada", weight: 40 },
+    { symbol: "vida", weight: 40 },
+    { symbol: "carta", weight: 20 },
+    { symbol: "retrigger", weight: 20 },
+    { symbol: "jackpot", weight: 7 }
   ];
   var TOTAL_WEIGHT = SYMBOL_WEIGHTS.reduce((s, e) => s + e.weight, 0);
   var WIN_LINES = [
@@ -16,7 +16,7 @@
     [[0, 0], [1, 1], [2, 2]],
     [[0, 2], [1, 1], [2, 0]]
   ];
-  var GUARANTEED_WIN_CHANCE = 0.5;
+  var GUARANTEED_WIN_CHANCE = 0.2;
   function randomSymbol() {
     let roll = Math.random() * TOTAL_WEIGHT;
     for (const { symbol, weight } of SYMBOL_WEIGHTS) {
@@ -67,11 +67,11 @@
     [[0, 2], [1, 1], [2, 0]]
   ];
   var BASE_EFFECTS = {
-    espada: 3,
+    espada: 4,
     vida: 3,
     carta: 0,
     retrigger: 0,
-    jackpot: 4
+    jackpot: 7
   };
   function detectWins(grid) {
     const wins = [];
@@ -153,7 +153,7 @@
     setPhaseMessage(msg) {
       this.phaseMsg.innerHTML = msg;
     }
-    showSpinButton(onSpin, onBet) {
+    showSpinButton(onSpin, onBet, onSkip) {
       this.spinBtn.onclick = () => {
         this.spinBtn.setAttribute("disabled", "true");
         onSpin();
@@ -165,6 +165,12 @@
         onBet();
       };
       betBtn.removeAttribute("disabled");
+      const skipBtn = document.getElementById("skip-btn");
+      skipBtn.onclick = () => {
+        skipBtn.setAttribute("disabled", "true");
+        onSkip();
+      };
+      skipBtn.removeAttribute("disabled");
       document.getElementById("spin-controls").classList.remove("hidden");
     }
     hideSpinButton() {
@@ -464,6 +470,11 @@
       async () => {
         renderer.hideSpinButton();
         await runBetSpins();
+      },
+      () => {
+        renderer.hideSpinButton();
+        state = advanceTurn(state);
+        startTurn();
       }
     );
   }

@@ -9,11 +9,11 @@ const WIN_LINES: [number, number][][] = [
 ];
 
 const BASE_EFFECTS: Record<Exclude<SlotSymbol, 'blank'>, number> = {
-  espada:    3,
+  espada:    4,
   vida:      3,
   carta:     0,
   retrigger: 0,
-  jackpot:   4,
+  jackpot:   7,
 };
 
 export function detectWins(grid: Grid): WinLine[] {
