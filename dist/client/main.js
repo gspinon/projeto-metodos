@@ -339,7 +339,7 @@
   function askBetAmount(playerName) {
     return new Promise((resolve) => {
       showModal(`
-      <h2 class="modal-title">\u{1F3B2} Apostar Fichas</h2>
+      <h2 class="modal-title">\u{1F3B2} Apostar Vida</h2>
       <p class="modal-desc"><strong>${playerName}</strong>, quantas fichas quer apostar?</p>
       <p class="modal-desc">Cada ficha equivale a 1 giro na roleta.</p>
       <div class="bet-input-wrapper">
@@ -363,7 +363,7 @@
       const respinDisabled = spinsLeft <= 0 ? "disabled" : "";
       const plural = spinsLeft !== 1 ? "s" : "";
       showModal(`
-      <h2 class="modal-title">\u{1F3B2} Aposta de Fichas</h2>
+      <h2 class="modal-title">\u{1F3B2} Aposta de Vidas</h2>
       <p class="modal-desc">Resultado atual: <strong>${effectDesc}</strong></p>
       <p class="modal-desc">Fichas restantes: <strong>${spinsLeft}</strong></p>
       <div class="modal-buttons">
