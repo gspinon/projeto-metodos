@@ -49,7 +49,7 @@ function init(): void {
 function startTurn(): void {
   renderer.clearEffectsLog();
   renderer.updatePlayerPanels(state);
-  renderer.setPhaseMessage(`🎰 Vez de <strong>${getActivePlayer(state).name}</strong>`);
+  renderer.setPhaseMessage(`Vez de <strong>${getActivePlayer(state).name}</strong>`);
 
   renderer.showSpinButton(
     async () => {
