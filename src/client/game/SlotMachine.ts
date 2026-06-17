@@ -2,11 +2,11 @@ import { SlotSymbol, Grid } from '../../shared/types';
 
 // Probabilidade de cada símbolo por célula (quando gerado aleatoriamente)
 const SYMBOL_WEIGHTS: { symbol: SlotSymbol; weight: number }[] = [
-  { symbol: 'espada',    weight: 40 },
-  { symbol: 'vida',      weight: 40 },
-  { symbol: 'carta',     weight: 20 },
-  { symbol: 'retrigger', weight: 20 },
-  { symbol: 'jackpot',   weight: 7  },
+  { symbol: 'espada',    weight: 4 },
+  { symbol: 'vida',      weight: 4 },
+  { symbol: 'carta',     weight: 2 },
+  { symbol: 'retrigger', weight: 2 },
+  { symbol: 'jackpot',   weight: 0.7  },
 ];
 
 const TOTAL_WEIGHT = SYMBOL_WEIGHTS.reduce((s, e) => s + e.weight, 0);
@@ -20,7 +20,7 @@ const WIN_LINES: [number, number][][] = [
 ];
 
 // 50% de chance de garantir pelo menos uma conexão por giro
-const GUARANTEED_WIN_CHANCE = 0.20;
+const GUARANTEED_WIN_CHANCE = 0.40;
 
 export function randomSymbol(): SlotSymbol {
   let roll = Math.random() * TOTAL_WEIGHT;
